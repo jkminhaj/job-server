@@ -39,10 +39,20 @@ async function run() {
       if(req.query.job_title){
         query.job_title = req.query.job_title;
       }
+      if(req.query.email){
+        query.email = req.query.email;
+      }
       if(req.query.job_category){
         query.job_category = req.query.job_category;
       }
       const result = await jobCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    // Post in all jobs
+    app.post('/all_jobs',async(req,res)=>{
+      const newJob = req.body ;
+      const result = await jobCollection.insertOne(newJob);
       res.send(result)
     })
 
@@ -67,7 +77,11 @@ async function run() {
       const query = {}
       if(req.query.email){
         query.email = req.query.email;
+      };
+      if(req.query.category){
+        query.job_category = req.query.category;
       }
+      console.log(query)
       const result = await applicationCollection.find(query).toArray()
       res.send(result)
     })
