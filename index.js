@@ -30,6 +30,7 @@ async function run() {
     // Get the database and collection on which to run the operation
     const database = client.db('job_DB');
     const jobCollection = database.collection('all_jobs');
+    const applicationCollection = database.collection('all_applications');
 
 
     // Get all jobs
@@ -52,6 +53,23 @@ async function run() {
       res.send(result);
 
 
+    })
+
+    // Post in All application
+    app.post('/all_applications',async(req,res)=>{
+      const application = req.body ;
+      const result = await applicationCollection.insertOne(application);
+      res.send(result);
+    })
+
+    // Get All application by email with query params
+    app.get('/all_applications',async(req,res)=>{
+      const query = {}
+      if(req.query.email){
+        query.email = req.query.email;
+      }
+      const result = await applicationCollection.find(query).toArray()
+      res.send(result)
     })
 
 
