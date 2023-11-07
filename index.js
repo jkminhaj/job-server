@@ -65,8 +65,42 @@ async function run() {
 
     })
 
+    // Delete a single job by id
+    app.delete('/all_jobs/:id',async(req,res)=>{
+      const id = req.params.id ;
+      const result = await jobCollection.deleteOne({_id: new ObjectId(id)})
+      res.send(result);
+    })
+
+    // Update a single job by id
+    app.put('/all_jobs/:id',async(req,res)=>{
+      const id = req.params.id;
+      const updatedJob = req.body;
+      const doc = {
+        $set:{
+          name : updatedJob.name,
+          job_banner : updatedJob.job_banner,
+          job_applicants_number : updatedJob.job_applicants_number,
+          description : updatedJob.description,
+          job_category : updatedJob.job_category,
+          job_posting_date : updatedJob.job_posting_date,
+          application_deadline : updatedJob.application_deadline,
+          salary_range : updatedJob.salary_range,
+          job_title : updatedJob.job_title,
+        }
+      }
+      const result = await jobCollection.updateOne({_id: new ObjectId(id)}, doc , {upsert:true});
+      res.send(result);
+    })
+
     // Post in All application
     app.post('/all_applications',async(req,res)=>{
+      if(req.query.jobId){
+        await jobCollection.updateOne(
+          { _id: new ObjectId(req.query.jobId) },
+          { $inc: { job_applicants_number: 1 } }
+        )
+      }
       const application = req.body ;
       const result = await applicationCollection.insertOne(application);
       res.send(result);
