@@ -9,7 +9,7 @@ const port = 3000
 
 // middlewares
 app.use(cors({
-  origin: ['http://localhost:5173'],
+  origin: ['http://localhost:5173', 'https://job2324-7cf51.web.app', 'https://job2324-7cf51.firebaseapp.com'],
   credentials: true
 }))
 app.use(express.json())
@@ -34,7 +34,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded
     next()
   })
- }
+}
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.szfaclu.mongodb.net/?retryWrites=true&w=majority`;
@@ -51,7 +51,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Get the database and collection on which to run the operation
     const database = client.db('job_DB');
     const jobCollection = database.collection('all_jobs');
@@ -69,12 +69,21 @@ async function run() {
         sameSite: 'none'
       })
         .send({ success: true })
-        // token coming and deleting
+      // token coming and deleting
     })
+    // app.post('/logout', async (req, res) => {
+    //   const user = req.body;
+    //   // console.log('hitting log out',user)
+    //   res.clearCookie('token', { maxAge: 0 }).send({ success: true })
+    // })
+
+    // Logout
     app.post('/logout', async (req, res) => {
       const user = req.body;
-      // console.log('hitting log out',user)
-      res.clearCookie('token', { maxAge: 0 }).send({ success: true })
+      console.log('logging out', user);
+      res
+        .clearCookie('token', { maxAge: 0, sameSite: 'none', secure: true })
+        .send({ success: true })
     })
 
     // Get all jobs
@@ -97,13 +106,13 @@ async function run() {
     })
 
     // My job Private
-    app.get('/my_jobs',verifyToken,async(req,res)=>{
-      if(req.user.email!==req.query.email){
-        return res.status(403).send({message:'forbidden access'})
+    app.get('/my_jobs', verifyToken, async (req, res) => {
+      if (req.user.email !== req.query.email) {
+        return res.status(403).send({ message: 'forbidden access' })
       }
-      console.log('my job server hitted' , req.query.email)
+      console.log('my job server hitted', req.query.email)
       const query = {}
-      if(req.query.email){
+      if (req.query.email) {
         query.email = req.query.email
       }
       const result = await jobCollection.find(query).toArray()
@@ -111,7 +120,7 @@ async function run() {
     })
 
     // Get all jobs for public
-    app.get('/all_jobs_public',async(req,res)=>{
+    app.get('/all_jobs_public', async (req, res) => {
       const result = await jobCollection.find().toArray()
       res.send(result)
     })
@@ -175,9 +184,9 @@ async function run() {
     })
 
     // Get All application by email with query params
-    app.get('/all_applications',verifyToken, async (req, res) => {
-      if(req.user.email!==req.query.email){
-        return res.status(403).send({message:'forbidden access'})
+    app.get('/all_applications', verifyToken, async (req, res) => {
+      if (req.user.email !== req.query.email) {
+        return res.status(403).send({ message: 'forbidden access' })
       }
       const query = {}
       if (req.query.email) {
