@@ -7,6 +7,7 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const port = 3000
 
+
 // middlewares
 app.use(cors({
   origin: ['http://localhost:5173', 'https://job2324-7cf51.web.app', 'https://job2324-7cf51.firebaseapp.com'],
