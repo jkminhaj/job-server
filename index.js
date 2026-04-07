@@ -10,7 +10,7 @@ const port = 3000
 
 // middlewares
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://job2324-7cf51.web.app', 'https://job2324-7cf51.firebaseapp.com'],
+  origin: ['http://localhost:5173', 'https://job2324-7cf51.web.app', 'https://job2324-7cf51.firebaseapp.com','https://job-client-ashen.vercel.app'],
   credentials: true
 }))
 app.use(express.json())
