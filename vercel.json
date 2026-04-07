@@ -11,12 +11,5 @@
       "src": "/(.*)",
       "dest": "/index.js"
     }
-  ],
-  
-  "projectSettings": {
-    "framework": null,
-    "buildCommand": null,
-    "devCommand": null,
-    "outputDirectory": null
-  }
+  ]
 }
