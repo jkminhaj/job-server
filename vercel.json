@@ -12,6 +12,7 @@
       "dest": "/index.js"
     }
   ],
+  
   "projectSettings": {
     "framework": null,
     "buildCommand": null,
